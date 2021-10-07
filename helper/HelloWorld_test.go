@@ -169,3 +169,67 @@ func TestHelloWorldTable(t *testing.T) {
 		})
 	}
 }
+
+/**
+
+**Benchmark**
+How To Run:
+1. go test -v -bench=. (Running unit test dan benchmark)
+2. go test -v -run=TestTidakAda -bench=. (hanya running benchmark)
+3. go test -v -run=TestTidakAda -bench=BenchmarkHello (hanya running fungi benchmark hello)
+4. go test -v -run=TestTidakAda -bench=. ./... (running semua benchmark yang ada di root)
+*/
+func BenchmarkHelloWorld(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		HelloWorld("Lans")
+	}
+}
+func BenchmarkHelloWorldLander(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		HelloWorld("Lander")
+	}
+}
+
+func BenchmarkHelloWorldSub(b *testing.B) {
+	b.Run("Lander", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			HelloWorld("Lans")
+		}
+	})
+	b.Run("Alvin", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			HelloWorld("Alvin")
+		}
+	})
+}
+
+func BenchmarkHelloWorldTable(b *testing.B) {
+	benchmarks := []struct {
+		name    string
+		request string
+	}{
+		{
+			name:    "HelloWorld(Lans)",
+			request: "Lans",
+		},
+		{
+			name:    "HelloWorld(Lander)",
+			request: "Lander",
+		},
+		{
+			name:    "HelloWorld(Alvin)",
+			request: "Alvin",
+		},
+		{
+			name:    "HelloWorld(Alvin Lander)",
+			request: "Alvin Lander",
+		},
+	}
+	for _, benchmark := range benchmarks {
+		b.Run(benchmark.name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				HelloWorld(benchmark.request)
+			}
+		})
+	}
+}
